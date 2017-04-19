@@ -211,7 +211,7 @@ def GetUserInfo():
 
 @app.route('/mapHomePage', methods=['GET'])
 def mapHomePage():
-    return render_template('ui.html')
+    return render_template('mapInterface.html')
 
 
 @app.route('/mapTransportType')
