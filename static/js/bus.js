@@ -16,49 +16,22 @@ function initMapBus() {
     setMarkers(map);
 }
 
-// Data for the markers consisting of a name, a LatLng and a zIndex for the
-// order in which these markers should display on top of each other.
-var flights = [
-    [1,'Aeropuerto Guanacaste',10.542809,-85.596905,4],
-    [2,'Aeropuerto Limon',10.196989,-83.388653,3],
-    [3,'Aeropuerto Puntarenas',8.603741,-82.971173,2],
-    [4,'Aeropuerto San Jose',9.998669,-84.203872,1]
-];
+var json_flights = '{"response": [' +
+        '{"id": 1, "name": "Aeropuerto Guanacaste", "latitude": 10.542809, "longitud": -85.596905},' +
+        '{"id": 2, "name": "Aeropuerto Limon", "latitude": 10.196989, "longitud": -83.388653},' +
+        '{"id": 3, "name": "Aeropuerto Puntarenas", "latitude": 8.603741, "longitud": -82.971173},' +
+        '{"id": 4, "name": "Aeropuerto San Jose", "latitude": 9.998669, "longitud": -84.203872}]}',
 
-// var data = {
-//     "response": [{
-//         "id": 1,
-//         "name": "Aeropuerto Guanacaste",
-//         "latitude": 10.542809,
-//         "longitud": -85.596905
-//     }]
-// }
-
-// var data = {
-//     "name": "John",
-//     "age": 30,
-//     "city": "New York"
-// }
-//
-// obj = JSON.parse(data);
-// var algo = obj.name + ", " + obj.age;
-// console.log(algo);
-
-var json = '{"id":1, name": "John","age": 30,"city": "New York"}',
-    obj = JSON.parse(json);
-
-console.log(obj.city);
+flight_marker = JSON.parse(json_flights);
 
 function setMarkers(map) {
-    for (var i = 0; i < flights.length; i++) {
-        var flight = flights[i];
-        var flight_id = String(flight[0]);
-        console.log(flight[0].toString());
+    for (var i = 0; i < flight_marker.response.length; i++) {
+        var flight = flight_marker.response[i];
+        var flight_id = String(flight.id);
         var marker = new google.maps.Marker({
-            position: {lat: flight[2], lng: flight[3]},
+            position: {lat: flight.latitude, lng: flight.longitud},
             map: map,
-            title: flight[1],
-            zIndex: flight[4],
+            title: flight.name,
             label: {
                 text: flight_id,
                 color: '#000',
