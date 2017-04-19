@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple Polylines</title>
+ <link rel="stylesheet" type="text/css" href="../static/css/styles.css" />
+ <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-3.3.7-dist/css/bootstrap.css" />
+ <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-3.3.7-dist/css/bootstrap-theme.css" />
+  </head>
+  <body>
+  <div class="page-header">
+    <h2>Transportation System</h2>
+  </div>
+
+  <div class="container">
+      <button type="button" class="btn btn-primary" onclick="initMapFlights()">Flights</button>
+      <button type="button" class="btn btn-primary" onclick="initMapTrain()">Train</button>
+      <button type="button" class="btn btn-primary" onclick="initMapTaxi()">Taxi</button>
+      <button type="button" class="btn btn-primary" onclick="initMapBus()">Bus</button>
+  </div>
+
+  <div class="col-xs-12">
+      <div class="col-xs-6">
+          <div class="map-container">
+              <div id="map"></div>
+          </div>
+      </div>
+      <div class="col-xs-6 center-block">
+          <div class=" container-fluid">
+              <form class="form-inline">
+                  <label class="mr-sm-2 option_space" for="inlineFormCustomSelectOrigin">Origin</label>
+                  <select class="custom-select mb-2 mr-sm-2 mb-sm-0 option_space" id="inlineFormCustomSelectOrigin">
+                      <option selected>Choose Origin</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                  </select>
+                  <label class="mr-sm-2 option_space" for="inlineFormCustomSelectDestionation">Destination</label>
+                  <select class="custom-select mb-2 mr-sm-2 mb-sm-0 option_space" id="inlineFormCustomSelectDestionation">
+                      <option selected>Choose Destination</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                  </select>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+          </div>
+          <div class="container-fluid">
+              <table class="table">
+                  <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Username</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                      <th scope="row">1</th>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td>@mdo</td>
+                  </tr>
+                  <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                  </tr>
+                  <tr>
+                      <th scope="row">3</th>
+                      <td>Larry</td>
+                      <td>the Bird</td>
+                      <td>@twitter</td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" ></script>
+  <script type="text/javascript" src="../static/js/bootstrap.js"></script>
+  <script type="text/javascript" src="../static/js/0_map.js"></script>
+  <script type="text/javascript" src="../static/js/1_flightmaps.js"></script>
+  <script type="text/javascript" src="../static/js/2_trainmap.js"></script>
+  <script type="text/javascript" src="../static/js/3_bustaxi.js"></script>
+  <script type="text/javascript" src="../static/js/bus.js"></script>
+  <script type="text/javascript" src="../static/js/bootstrap.js"></script>
+  <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyoCNutbdORchm3ZdsArCTYSfnHdcAQNk&callback=costaRicaMap">
+  </script>
+
+  </body>
+</html>

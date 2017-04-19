@@ -1,0 +1,22 @@
+/* Always set the map height explicitly to define the size of the div
+      * element that contains the map. */
+/*body{
+    margin: 0;
+}*/
+
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.map-container{
+    margin: 3%;
+    width: 100%;
+    height: 600px;
+    border:solid;
+}
+
+.option_space{
+    margin: 0% 2% 0% 3%;
+}
