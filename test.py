@@ -219,23 +219,30 @@ def getFlightMarkers():
     nodesInfo = getAllNodes("tbl_flight_nodes")
     nodes = formatNodesForMarkers(nodesInfo)
     json_content = {"response": nodes}
-    print(nodesInfo)
+    # print(json_content)
     return jsonify(json_content)
-@app.route('/getTrainMarkers', methods=['GET'])
+    # return json.dump(json_content)
+    # return json_content
+
+@app.route('/getTrainMarkers', methods=['POST'])
 def getTrainMarkers():
     nodesInfo = getAllNodes("tbl_train_nodes")
     nodes = formatNodesForMarkers(nodesInfo)
     json_content = {"response": nodes}
     print(nodesInfo)
     return jsonify(json_content)
-@app.route('/getBusMarkers', methods=['GET'])
+
+
+@app.route('/getBusMarkers', methods=['POST'])
 def getBusMarkers():
     nodesInfo = getAllNodes("tbl_bus_nodes")
     nodes = formatNodesForMarkers(nodesInfo)
     json_content = {"response": nodes}
     print(nodesInfo)
     return jsonify(json_content)
-@app.route('/getTaxiMarkers', methods=['GET'])
+
+
+@app.route('/getTaxiMarkers', methods=['POST'])
 def getTaxiMarkers():
     nodesInfo = getAllNodes("tbl_taxi_nodes")
     nodes = formatNodesForMarkers(nodesInfo)

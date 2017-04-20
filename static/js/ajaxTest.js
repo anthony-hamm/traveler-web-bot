@@ -49,3 +49,18 @@ $(function () {
 //             }
 //         });
 
+
+function getFlightMarkers() {
+  $.ajax({
+        url:'/getFlightMarkers',
+        type:'GET',
+        // data: 'q=' + str,
+        // dataType: 'json',
+        success: function(response) {
+           json_content = response
+        },
+        error:function (error) {
+            console.log(error);
+        }
+    });
+};

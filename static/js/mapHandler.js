@@ -32,10 +32,10 @@ var json_trains = '{"response": [' +
             '{"id": 4, "name": "Estación de Tren San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
 
 var json_buses = '{"response": [' +
-            '{"id": 1, "name": "Estación de Bus Guanacaste", "latitude": 10.542809, "longitude": -85.596905},' +
-            '{"id": 2, "name": "Estación de Bus Limon", "latitude": 10.196989, "longitude": -83.388653},' +
-            '{"id": 3, "name": "Estación de Bus Puntarenas", "latitude": 8.603741, "longitude": -82.971173},' +
-            '{"id": 4, "name": "Estación de Bus San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
+            '{"id": "1", "name": "Estación de Bus Guanacaste", "latitude": "10.542809", "longitude": "-85.596905"},' +
+            '{"id": "2", "name": "Estación de Bus Limon", "latitude": "10.196989", "longitude": "-83.388653"},' +
+            '{"id": "3", "name": "Estación de Bus Puntarenas", "latitude": "8.603741", "longitude": "-82.971173"},' +
+            '{"id": "4", "name": "Estación de Bus San Jose", "latitude": "9.998669", "longitude": "-84.203872"}]}';
 
 var json_taxis = '{"response": [' +
             '{"id": 1, "name": "Estación de Taxi Guanacaste", "latitude": 10.542809, "longitude": -85.596905},' +
@@ -60,26 +60,48 @@ function initMap(transport_id) {
         ]
     });
 
+    var json_response;
+
     switch (transport_id){
         // ID:1 == Flight Transport Type
         case 1:
             // TODO: INSERTAR AQUÍ EL METODO AJAX QUE RETORNE JSON CON INFORMACIÓN DE GRAFO SEGÚN EL TIPO DE TRANSPORTE
-                var json_response = json_flights;
+            // function getFlightMarkers() {
+            $.ajax({
+                url:'http://localhost:8000/getFlightMarkers',
+                type:'GET',
+                // async: false,
+                // data: 'q=' + str,
+                // dataType: 'json',
+                success: function(response) {
+                    response = JSON.stringify(response);
+                    json_response = "'" + response + "'";
+                    console.log(response);
+                    console.log(json_response);
+                },
+                error:function (error) {
+                    console.log(error);
+                }
+            });
+            // };
+            // getFlightMarkers();
+
+            // json_response = json_flights;
             break;
         // ID:2 == Train Transport Type
         case 2:
             // TODO: INSERTAR AQUÍ EL METODO AJAX QUE RETORNE JSON CON INFORMACIÓN DE GRAFO SEGÚN EL TIPO DE TRANSPORTE
-            var json_response = json_trains;
+            // json_response = json_trains;
             break;
         // ID:3 == Bus Transport Type
         case 3:
             // TODO: INSERTAR AQUÍ EL METODO AJAX QUE RETORNE JSON CON INFORMACIÓN DE GRAFO SEGÚN EL TIPO DE TRANSPORTE
-            var json_response = json_buses;
+            json_response = json_buses;
             break;
         // ID:4 == Taxi Transport Type
         case 4:
             // TODO: INSERTAR AQUÍ EL METODO AJAX QUE RETORNE JSON CON INFORMACIÓN DE GRAFO SEGÚN EL TIPO DE TRANSPORTE
-            var json_response = json_taxis;
+            json_response = json_taxis;
             break;
     }
 
@@ -94,7 +116,7 @@ function setMarkers(map, json_content) {
         var item = json_content.response[i];
         var item_id = String(item.id);
         var marker = new google.maps.Marker({
-            position: {lat: item.latitude, lng: item.longitude},
+            position: {lat: Number(item.latitude), lng: Number(item.longitude)},
             map: map,
             title: item.name,
             label: {
@@ -105,4 +127,8 @@ function setMarkers(map, json_content) {
         });
     }
 }
+
+
+/*--------------------------------- Ajax Functions ---------------------------------*/
+
 
