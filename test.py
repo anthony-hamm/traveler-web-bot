@@ -214,6 +214,36 @@ def mapHomePage():
     return render_template('mapInterface.html')
 
 
+@app.route('/getFlightMarkers', methods=['GET'])
+def getFlightMarkers():
+    nodesInfo = getAllNodes("tbl_flight_nodes")
+    nodes = formatNodesForMarkers(nodesInfo)
+    json_content = {"response": nodes}
+    print(nodesInfo)
+    return jsonify(json_content)
+@app.route('/getTrainMarkers', methods=['GET'])
+def getTrainMarkers():
+    nodesInfo = getAllNodes("tbl_train_nodes")
+    nodes = formatNodesForMarkers(nodesInfo)
+    json_content = {"response": nodes}
+    print(nodesInfo)
+    return jsonify(json_content)
+@app.route('/getBusMarkers', methods=['GET'])
+def getBusMarkers():
+    nodesInfo = getAllNodes("tbl_bus_nodes")
+    nodes = formatNodesForMarkers(nodesInfo)
+    json_content = {"response": nodes}
+    print(nodesInfo)
+    return jsonify(json_content)
+@app.route('/getTaxiMarkers', methods=['GET'])
+def getTaxiMarkers():
+    nodesInfo = getAllNodes("tbl_taxi_nodes")
+    nodes = formatNodesForMarkers(nodesInfo)
+    json_content = {"response": nodes}
+    print(nodesInfo)
+    return jsonify(json_content)
+
+
 @app.route('/mapTransportType')
 def mapTransportType():
     json_content = {"response":[{"id":1,"name":"Aeropuerto Guanacaste","latitude":10.542809,"longitud":-85.596905},{"id":2,"name":"Aeropuerto Limon","latitude":10.196989,"longitud":-83.388653},{"id":3,"name":"Aeropuerto Puntarenas","latitude":8.603741,"longitud":-82.971173},{"id":4,"name":"Aeropuerto San Jose","latitude":9.998669,"longitud":-84.203872}]}
@@ -226,6 +256,34 @@ def mapTransportType():
 
 
 ###############------------------------------------- Graph Creation ------------------------------------################
+
+def CreateGraph(graphName, column, table):
+    ids = GetColumnRows(column, table)
+    for index in range (0, len(ids)):
+        graphName.add_node(ids[index])
+    # print("nodes: " + str(graphName.nodes(graphName)))
+
+
+def CreateEdge(graphName, node1, node2, weight, table):
+    node1_ids = GetColumnRows(node1, table)
+    node2_ids = GetColumnRows(node2, table)
+    weights = GetColumnRows(weight, table)
+    for index in range (0, len(node1_ids)):
+        graphName.add_edge(node1_ids[index], node2_ids[index], weight=weights[index])
+    # print("edges: " + str(graphName.edges(graphName)))
+
+
+def GenerateGraphStructure():
+    for index in range(0,len(nodeTableNames)):
+        CreateGraph(graphNames[index], "id", nodeTableNames[index])
+        CreateEdge(graphNames[index], "node1_id", "node2_id", "weight", edgeTableNames[index])
+
+###############------------------------------------- Graph Creation ------------------------------------################
+
+
+
+
+###############----------------------------------- Graph Miscellaneous ---------------------------------################
 
 # Get specific COLUMN from TABLE in Database
 def GetColumnRows(column, table):
@@ -252,29 +310,115 @@ def GetColumnRows(column, table):
         cursor.close()
         connection.close()
 
+    # get the node information from the Database
+def GetNodeFromDB(id, table):
+    # sqlActions = "SELECT action_name FROM `web-bot`.tbl_action;"
+    # Query all the rows from a database table FROM `traveler-web-bot`." + table + "
+    sql = "SELECT * FROM `traveler-web-bot`." + table + " WHERE id = " + id + ";"
+    try:
+        nodeArray = []
+        ##### id, name, company, latitude, longitude, route_id, schedules, passengers = [], [], [], [], [], [], [], []
+        # create mySQL connection
+        connection = mysql.connect()
+        # create the cursor to query the store procedure
+        cursor = connection.cursor()
+        # executes the sql query to pull the tbl_action table values
+        cursor.execute(sql)
+        rowCount = cursor.fetchall()
+        for row in rowCount:
+            nodeArray.append(row[0])
+            nodeArray.append(row[1])
+            nodeArray.append(row[2])
+            nodeArray.append(str(row[3]))
+            nodeArray.append(str(row[4]))
+            nodeArray.append(row[5])
+            nodeArray.append(row[6])
+            nodeArray.append(str(row[7]))
+        return nodeArray
+    except Exception as e:
+        # return json.dump({'error': str(e)})
+        return print("failed")
+    finally:
+        cursor.close()
+        connection.close()
 
-def CreateGraph(graphName, column, table):
-    ids = GetColumnRows(column, table)
-    for index in range (0, len(ids)):
-        graphName.add_node(ids[index])
-    # print("nodes: " + str(graphName.nodes(graphName)))
+def GetNodesInfoFromDB(table):
+    # sqlActions = "SELECT action_name FROM `web-bot`.tbl_action;"
+    # Query all the rows from a database table
+    sql = "SELECT * FROM `traveler-web-bot`." + table + ";"
+    try:
+        id, name, company, latitude, longitude, route_id, schedules, passengers = [], [], [], [], [], [], [], []
+        # create mySQL connection
+        connection = mysql.connect()
+        # create the cursor to query the store procedure
+        cursor = connection.cursor()
+        # executes the sql query to pull the tbl_action table values
+        cursor.execute(sql)
+        rowCount = cursor.fetchall()
+        for row in rowCount:
+            id.append(row[0])
+            name.append(row[1])
+            company.append(row[2])
+            latitude.append(str(row[3]))
+            longitude.append(str(row[4]))
+            route_id.append(row[5])
+            schedules.append(row[6])
+            passengers.append(str(row[7]))
+        nodeArray = [id, name, company, latitude, longitude, route_id, schedules, passengers]
+        # return array of array's with all the node's information.
+        # i.e: [ [ids],[names],[companies],[latitudes],[longitudes],[routes],[schedules],[passengers] ]
+        return nodeArray
+    except Exception as e:
+        # return json.dump({'error': str(e)})
+        return print("failed")
+    finally:
+        cursor.close()
+        connection.close()
+
+def getAllNodes(table):
+    try:
+        nodes = []
+        nodeArray = GetNodesInfoFromDB(table)
+        id = nodeArray[0]
+        name = nodeArray[1]
+        company = nodeArray[2]
+        latitude = nodeArray[3]
+        longitude = nodeArray[4]
+        route_id = nodeArray[5]
+        schedules = nodeArray[6]
+        passengers = nodeArray[7]
+        jsonNodeContent = {}
+        for i in range(0, len(id)):
+            temp = [str(id[i]),
+                    str(name[i]),
+                    str(company[i]),
+                    str(latitude[i]),
+                    str(longitude[i]),
+                    str(route_id[i]),
+                    str(schedules[i]),
+                    str(passengers[i])
+                    ]
+            nodes.append(temp)
+        res = nodes
+        # res = json.dumps({"Flight Nodes": nodes})
+        return res
+    except Exception as e:
+        # return json.dump({'error': str(e)})
+        return print(e)
 
 
-def CreateEdge(graphName, node1, node2, weight, table):
-    node1_ids = GetColumnRows(node1, table)
-    node2_ids = GetColumnRows(node2, table)
-    weights = GetColumnRows(weight, table)
-    for index in range (0, len(node1_ids)):
-        graphName.add_edge(node1_ids[index], node2_ids[index], weight=weights[index])
-    # print("edges: " + str(graphName.edges(graphName)))
+def formatNodesForMarkers(nodesInfo):
+    nodesFormated = []
+    for i in range(0, len(nodesInfo)):
+        temp = {"id": nodesInfo[i][0],
+                "name": nodesInfo[i][1],
+                "latitude": nodesInfo[i][3],
+                "longitude": nodesInfo[i][4]
+                }
+        nodesFormated.append(temp)
+    return nodesFormated
 
-
-def GenerateGraphStructure():
-    for index in range(0,len(nodeTableNames)):
-        CreateGraph(graphNames[index], "id", nodeTableNames[index])
-        CreateEdge(graphNames[index], "node1_id", "node2_id", "weight", edgeTableNames[index])
-
-###############------------------------------------- Graph Creation ------------------------------------################
+###############----------------------------------- Graph Miscellaneous ---------------------------------################
 
 
 

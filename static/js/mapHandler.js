@@ -20,28 +20,28 @@ function costaRicaMap() {
 }
 
 var json_flights = '{"response": [' +
-        '{"id": 1, "name": "Aeropuerto Guanacaste", "latitude": 10.542809, "longitud": -85.596905},' +
-        '{"id": 2, "name": "Aeropuerto Limon", "latitude": 10.196989, "longitud": -83.388653},' +
-        '{"id": 3, "name": "Aeropuerto Puntarenas", "latitude": 8.603741, "longitud": -82.971173},' +
-        '{"id": 4, "name": "Aeropuerto San Jose", "latitude": 9.998669, "longitud": -84.203872}]}';
+        '{"id": 1, "name": "Aeropuerto Guanacaste", "latitude": 10.54280900, "longitude": -85.59690500},' +
+        '{"id": 2, "name": "Aeropuerto Limon", "latitude": 10.196989, "longitude": -83.388653},' +
+        '{"id": 3, "name": "Aeropuerto Puntarenas", "latitude": 8.603741, "longitude": -82.971173},' +
+        '{"id": 4, "name": "Aeropuerto San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
 
 var json_trains = '{"response": [' +
-            '{"id": 1, "name": "Estación de Tren Guanacaste", "latitude": 10.542809, "longitud": -85.596905},' +
-            '{"id": 2, "name": "Estación de Tren Limon", "latitude": 10.196989, "longitud": -83.388653},' +
-            '{"id": 3, "name": "Estación de Tren Puntarenas", "latitude": 8.603741, "longitud": -82.971173},' +
-            '{"id": 4, "name": "Estación de Tren San Jose", "latitude": 9.998669, "longitud": -84.203872}]}';
+            '{"id": 1, "name": "Estación de Tren Guanacaste", "latitude": 10.542809, "longitude": -85.596905},' +
+            '{"id": 2, "name": "Estación de Tren Limon", "latitude": 10.196989, "longitude": -83.388653},' +
+            '{"id": 3, "name": "Estación de Tren Puntarenas", "latitude": 8.603741, "longitude": -82.971173},' +
+            '{"id": 4, "name": "Estación de Tren San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
 
 var json_buses = '{"response": [' +
-            '{"id": 1, "name": "Estación de Bus Guanacaste", "latitude": 10.542809, "longitud": -85.596905},' +
-            '{"id": 2, "name": "Estación de Bus Limon", "latitude": 10.196989, "longitud": -83.388653},' +
-            '{"id": 3, "name": "Estación de Bus Puntarenas", "latitude": 8.603741, "longitud": -82.971173},' +
-            '{"id": 4, "name": "Estación de Bus San Jose", "latitude": 9.998669, "longitud": -84.203872}]}';
+            '{"id": 1, "name": "Estación de Bus Guanacaste", "latitude": 10.542809, "longitude": -85.596905},' +
+            '{"id": 2, "name": "Estación de Bus Limon", "latitude": 10.196989, "longitude": -83.388653},' +
+            '{"id": 3, "name": "Estación de Bus Puntarenas", "latitude": 8.603741, "longitude": -82.971173},' +
+            '{"id": 4, "name": "Estación de Bus San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
 
 var json_taxis = '{"response": [' +
-            '{"id": 1, "name": "Estación de Taxi Guanacaste", "latitude": 10.542809, "longitud": -85.596905},' +
-            '{"id": 2, "name": "Estación de Taxi Limon", "latitude": 10.196989, "longitud": -83.388653},' +
-            '{"id": 3, "name": "Estación de Taxi Puntarenas", "latitude": 8.603741, "longitud": -82.971173},' +
-            '{"id": 4, "name": "Estación de Taxi San Jose", "latitude": 9.998669, "longitud": -84.203872}]}';
+            '{"id": 1, "name": "Estación de Taxi Guanacaste", "latitude": 10.542809, "longitude": -85.596905},' +
+            '{"id": 2, "name": "Estación de Taxi Limon", "latitude": 10.196989, "longitude": -83.388653},' +
+            '{"id": 3, "name": "Estación de Taxi Puntarenas", "latitude": 8.603741, "longitude": -82.971173},' +
+            '{"id": 4, "name": "Estación de Taxi San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
 
 
 function initMap(transport_id) {
@@ -94,7 +94,7 @@ function setMarkers(map, json_content) {
         var item = json_content.response[i];
         var item_id = String(item.id);
         var marker = new google.maps.Marker({
-            position: {lat: item.latitude, lng: item.longitud},
+            position: {lat: item.latitude, lng: item.longitude},
             map: map,
             title: item.name,
             label: {
