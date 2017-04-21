@@ -2,6 +2,9 @@
  * Created by hamme on 19/04/2017.
  */
 
+var ajax_response;
+var transportType;
+
 function costaRicaMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 8,
@@ -18,30 +21,6 @@ function costaRicaMap() {
         ]
     });
 }
-
-var json_flights = '{"response":[' +
-    '{"id":1","name":"Aeropuerto Guanacaste","latitude":"10.54280900","longitude":"-85.59690500"},' +
-    '{"id":"2","name":"Aeropuerto Limon","latitude":"10.196989","longitude":"-83.388653"},' +
-    '{"id":"3","name":"Aeropuerto Puntarenas","latitude":"8.603741","longitude":"-82.971173"},' +
-    '{"id":"4","name":"Aeropuerto San Jose","latitude":"9.998669","longitude":"-84.203872"}]}';
-
-var json_trains = '{"response": [' +
-    '{"id": 1, "name": "Estación de Tren Guanacaste", "latitude": 10.542809, "longitude": -85.596905},' +
-    '{"id": 2, "name": "Estación de Tren Limon", "latitude": 10.196989, "longitude": -83.388653},' +
-    '{"id": 3, "name": "Estación de Tren Puntarenas", "latitude": 8.603741, "longitude": -82.971173},' +
-    '{"id": 4, "name": "Estación de Tren San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
-
-var json_buses = '{"response": [' +
-    '{"id": "1", "name": "Estación de Bus Guanacaste", "latitude": "10.542809", "longitude": "-85.596905"},' +
-    '{"id": "2", "name": "Estación de Bus Limon", "latitude": "10.196989", "longitude": "-83.388653"},' +
-    '{"id": "3", "name": "Estación de Bus Puntarenas", "latitude": "8.603741", "longitude": "-82.971173"},' +
-    '{"id": "4", "name": "Estación de Bus San Jose", "latitude": "9.998669", "longitude": "-84.203872"}]}';
-
-var json_taxis = '{"response": [' +
-    '{"id": 1, "name": "Estación de Taxi Guanacaste", "latitude": 10.542809, "longitude": -85.596905},' +
-    '{"id": 2, "name": "Estación de Taxi Limon", "latitude": 10.196989, "longitude": -83.388653},' +
-    '{"id": 3, "name": "Estación de Taxi Puntarenas", "latitude": 8.603741, "longitude": -82.971173},' +
-    '{"id": 4, "name": "Estación de Taxi San Jose", "latitude": 9.998669, "longitude": -84.203872}]}';
 
 
 function initMap(transport_id) {
@@ -60,7 +39,7 @@ function initMap(transport_id) {
         ]
     });
 
-    var ajax_response;
+    // var ajax_response;
 
     switch (transport_id) {
         // ID:1 == Flight Transport Type
@@ -90,6 +69,7 @@ function initMap(transport_id) {
                     console.log(error);
                 }
             });
+            transportType = "flight";
             break;
         // ID:2 == Train Transport Type
         case 2:
@@ -179,9 +159,9 @@ function initMap(transport_id) {
     setMarkers(map, ajax_response);
 }
 
-function setMarkers(map, json_content) {
-    for (var i = 0; i < json_content.response.length; i++) {
-        var item = json_content.response[i];
+function setMarkers(map, ajax_content) {
+    for (var i = 0; i < ajax_content.response.length; i++) {
+        var item = ajax_content.response[i];
         var marker = new google.maps.Marker({
             position: {lat: Number(item.latitude), lng: Number(item.longitude)},
             map: map,
@@ -195,32 +175,37 @@ function setMarkers(map, json_content) {
     }
 }
 
-function getInfoForMarkers() {
-    $.ajax({
-        url: 'http://localhost:8000/getTrainMarkers',
-        type: 'GET',
-        async: false,
-        success: function (response) {
-            ajax_response = response;
-            dropdown_options = ajax_response.response;
-            $("#inlineFormCustomSelectOrigin").empty();
-            $("#inlineFormCustomSelectDestination").empty();
-            $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
-            $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
-            var options = $("#inlineFormCustomSelectOrigin");
-            $.each(dropdown_options, function () {
-                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-            });
-            var options = $("#inlineFormCustomSelectDestination");
-            $.each(dropdown_options, function () {
-                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-            });
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
+function ABC(transport_id) {
+    console.log(ajax_response['response'][0].name);
 }
+
+//
+// function getInfoForMarkers() {
+//     $.ajax({
+//         url: 'http://localhost:8000/getTrainMarkers',
+//         type: 'GET',
+//         async: false,
+//         success: function (response) {
+//             ajax_response = response;
+//             dropdown_options = ajax_response.response;
+//             $("#inlineFormCustomSelectOrigin").empty();
+//             $("#inlineFormCustomSelectDestination").empty();
+//             $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
+//             $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
+//             var options = $("#inlineFormCustomSelectOrigin");
+//             $.each(dropdown_options, function () {
+//                 options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+//             });
+//             var options = $("#inlineFormCustomSelectDestination");
+//             $.each(dropdown_options, function () {
+//                 options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+//             });
+//         },
+//         error: function (error) {
+//             console.log(error);
+//         }
+//     });
+// }
 /*--------------------------------- Ajax Functions ---------------------------------*/
 
 

@@ -354,7 +354,6 @@ def GetNodesInfoFromDB(table):
     # Query all the rows from a database table
     sql = "SELECT * FROM `traveler-web-bot`." + table + ";"
     try:
-        id, name, company, latitude, longitude, route_id, schedules, passengers = [], [], [], [], [], [], [], []
         # create mySQL connection
         connection = mysql.connect()
         # create the cursor to query the store procedure
@@ -366,8 +365,6 @@ def GetNodesInfoFromDB(table):
         columns = []
         for i in range(0, len(rowCount[0])):
             columns.append("column" + str(i))
-            # print(str(columns[i]))
-
         for row in range (0, len(rowCount)):
             temp = []
             for col in range (0, len(rowCount[row])):
