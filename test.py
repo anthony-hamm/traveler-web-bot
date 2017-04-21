@@ -222,6 +222,7 @@ def getFlightMarkers():
     json_content = {"response": nodes}
     return jsonify(json_content)
 
+
 @app.route('/getTrainMarkers', methods=['GET'])
 def getTrainMarkers():
     nodesInfo = GetNodesInfoFromDB("tbl_train_nodes")
