@@ -79,11 +79,11 @@ function initMap(transport_id) {
                     $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
                     var options = $("#inlineFormCustomSelectOrigin");
                     $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.name));
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
                     });
                     var options = $("#inlineFormCustomSelectDestination");
                     $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.name));
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
                     });
                 },
                 error: function (error) {
@@ -124,11 +124,11 @@ function initMap(transport_id) {
                     $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
                     var options = $("#inlineFormCustomSelectOrigin");
                     $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.name));
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
                     });
                     var options = $("#inlineFormCustomSelectDestination");
                     $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.name));
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
                     });
                 },
                 error: function (error) {
@@ -152,11 +152,11 @@ function initMap(transport_id) {
                     $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
                     var options = $("#inlineFormCustomSelectOrigin");
                     $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.name));
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
                     });
                     var options = $("#inlineFormCustomSelectDestination");
                     $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.name));
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
                     });
                 },
                 error: function (error) {

@@ -217,6 +217,7 @@ def mapHomePage():
 @app.route('/getFlightMarkers', methods=['GET'])
 def getFlightMarkers():
     nodesInfo = getAllNodes("tbl_flight_nodes")
+    print(nodesInfo)
     nodes = formatNodesForMarkers(nodesInfo)
     json_content = {"response": nodes}
     return jsonify(json_content)
@@ -224,8 +225,11 @@ def getFlightMarkers():
 @app.route('/getTrainMarkers', methods=['GET'])
 def getTrainMarkers():
     nodesInfo = getAllNodes("tbl_train_nodes")
+    print(nodesInfo)
     nodes = formatNodesForMarkers(nodesInfo)
+    # print(nodes)
     json_content = {"response": nodes}
+    # print(json_content)
     return jsonify(json_content)
 
 
