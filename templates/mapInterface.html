@@ -28,17 +28,24 @@
       </div>
       <div class="col-xs-6 center-block">
           <div class=" container-fluid">
-              <form class="form-inline">
-                  <label class="mr-sm-2 option_space" for="inlineFormCustomSelectOrigin">Origin</label>
-                  <select class="custom-select mb-2 mr-sm-2 mb-sm-0 option_space" id="inlineFormCustomSelectOrigin">
-                      <option selected>Choose Origin</option>
-                  </select>
-                  <label class="mr-sm-2 option_space" for="inlineFormCustomSelectDestination">Destination</label>
-                  <select class="custom-select mb-2 mr-sm-2 mb-sm-0 option_space" id="inlineFormCustomSelectDestination">
-                      <option selected>Choose Destination</option>
-                  </select>
-                  <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
+                  <div class="form-group">
+                      <div class="col-xs-6">
+                          <h4>Origin</h4>
+                          <select class="custom-select mb-4 mr-sm-4 mb-sm-0" id="inlineFormCustomSelectOrigin">
+                              <option selected>Choose Origin</option>
+                          </select>
+                      </div>
+                      <div class="col-xs-6">
+                          <h4>Destination</h4>
+                          <select class="custom-select mb-4 mr-sm-2 mb-sm-4" id="inlineFormCustomSelectDestination">
+                              <option selected>Choose Origin</option>
+                          </select>
+                      </div>
+                  </div>
+
+                   <div class="col-xs-6 option_space">
+                       <button type="submit" class="btn btn-primary">Submit</button>
+               </div>
           </div>
           <div class="col-xs-6">
             <div class="container-fluid ">
