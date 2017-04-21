@@ -27,6 +27,7 @@ bus_graph = nx.Graph()
 taxi_graph = nx.Graph()
 
 graphNames = [flight_graph, train_graph, bus_graph, taxi_graph]
+graphNamesString = ["flight_graph", "train_graph", "bus_graph", "taxi_graph"]
 nodeTableNames = ["tbl_flight_nodes", "tbl_train_nodes", "tbl_bus_nodes", "tbl_taxi_nodes"]
 edgeTableNames = ["tbl_flight_edges", "tbl_train_edges", "tbl_bus_edges", "tbl_taxi_edges"]
 
@@ -255,6 +256,32 @@ def mapTransportType():
     json_content = {"response":[{"id":1,"name":"Aeropuerto Guanacaste","latitude":10.542809,"longitud":-85.596905},{"id":2,"name":"Aeropuerto Limon","latitude":10.196989,"longitud":-83.388653},{"id":3,"name":"Aeropuerto Puntarenas","latitude":8.603741,"longitud":-82.971173},{"id":4,"name":"Aeropuerto San Jose","latitude":9.998669,"longitud":-84.203872}]}
     # res = "Hola Mundo"
     return jsonify(json_content)
+
+@app.route('/camilo', methods=['POST'])
+def camilo():
+    cami1 = request.json['id']
+    cami2 = request.json['graphName']
+    all = str(cami1) + " " + str(cami2)
+    print(all)
+    return all
+
+# graphNames = [flight_graph, train_graph, bus_graph, taxi_graph]
+
+@app.route('/calculateRoute', methods=['POST'])
+def calculateRoute():
+    graph= ""
+    id1 = request.json['id1']
+    id2 = request.json['id2']
+    requestedGraph = request.json['graphName']
+    for i in range (0, len(graphNames)):
+        if str(graphNamesString[i]) == requestedGraph:
+            graph = graphNames[i]
+    sp = nx.all_pairs_dijkstra_path(graph)
+    print(sp[id1][id2])
+
+    all = str(id1) + " " + str(id2) + " " + str(graph)
+    return all
+
 
 ###############-------------------------------------- Map Handler --------------------------------------################
 
