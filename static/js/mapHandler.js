@@ -50,6 +50,7 @@ function initMap(transport_id) {
                 type: 'GET',
                 async: false,
                 success: function (response) {
+                    transportType = "flight_graph";
                     ajax_response = response;
                     dropdown_options = ajax_response.response;
                     $("#inlineFormCustomSelectOrigin").empty();
@@ -69,7 +70,6 @@ function initMap(transport_id) {
                     console.log(error);
                 }
             });
-            transportType = "flight";
             break;
         // ID:2 == Train Transport Type
         case 2:
@@ -79,6 +79,7 @@ function initMap(transport_id) {
                 type: 'GET',
                 async: false,
                 success: function (response) {
+                    transportType = "train_graph";
                     ajax_response = response;
                     dropdown_options = ajax_response.response;
                     $("#inlineFormCustomSelectOrigin").empty();
@@ -107,6 +108,7 @@ function initMap(transport_id) {
                 type: 'GET',
                 async: false,
                 success: function (response) {
+                    transportType = "bus_graph";
                     ajax_response = response;
                     dropdown_options = ajax_response.response;
                     $("#inlineFormCustomSelectOrigin").empty();
@@ -135,6 +137,7 @@ function initMap(transport_id) {
                 type: 'GET',
                 async: false,
                 success: function (response) {
+                    transportType = "taxi_graph";
                     ajax_response = response;
                     dropdown_options = ajax_response.response;
                     $("#inlineFormCustomSelectOrigin").empty();
@@ -175,37 +178,22 @@ function setMarkers(map, ajax_content) {
     }
 }
 
-function ABC(transport_id) {
-    console.log(ajax_response['response'][0].name);
+function calculateRoute() {
+    var origin_value = $("#inlineFormCustomSelectOrigin option:selected").val();
+    var destination_value = $("#inlineFormCustomSelectDestination option:selected").val();
+    var SendInfo = {
+        "id1": [origin_value],
+        "id2": [destination_value],
+        "graphName": [transportType]
+    };
+    $.ajax({
+        type: 'post',
+        url: 'http://localhost:8000/calculateRoute',
+        data: JSON.stringify(SendInfo),
+        contentType: "application/json; charset=utf-8",
+        traditional: true
+    });
 }
-
-//
-// function getInfoForMarkers() {
-//     $.ajax({
-//         url: 'http://localhost:8000/getTrainMarkers',
-//         type: 'GET',
-//         async: false,
-//         success: function (response) {
-//             ajax_response = response;
-//             dropdown_options = ajax_response.response;
-//             $("#inlineFormCustomSelectOrigin").empty();
-//             $("#inlineFormCustomSelectDestination").empty();
-//             $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
-//             $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
-//             var options = $("#inlineFormCustomSelectOrigin");
-//             $.each(dropdown_options, function () {
-//                 options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-//             });
-//             var options = $("#inlineFormCustomSelectDestination");
-//             $.each(dropdown_options, function () {
-//                 options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-//             });
-//         },
-//         error: function (error) {
-//             console.log(error);
-//         }
-//     });
-// }
 /*--------------------------------- Ajax Functions ---------------------------------*/
 
 
