@@ -99,9 +99,20 @@ function initMap(transport_id) {
                 type: 'GET',
                 async: false,
                 success: function (response) {
-                    console.log(response);
                     ajax_response = response;
-                    console.log(ajax_response);
+                    dropdown_options = ajax_response.response;
+                    $("#inlineFormCustomSelectOrigin").empty();
+                    $("#inlineFormCustomSelectDestination").empty();
+                    $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
+                    $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
+                    var options = $("#inlineFormCustomSelectOrigin");
+                    $.each(dropdown_options, function () {
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+                    });
+                    var options = $("#inlineFormCustomSelectDestination");
+                    $.each(dropdown_options, function () {
+                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+                    });
                 },
                 error: function (error) {
                     console.log(error);
@@ -169,11 +180,8 @@ function initMap(transport_id) {
 }
 
 function setMarkers(map, json_content) {
-    console.log('soy' + json_content.response);
     for (var i = 0; i < json_content.response.length; i++) {
-        console.log('NO' + json_content);
         var item = json_content.response[i];
-        console.log('NO' + item[i]);
         var marker = new google.maps.Marker({
             position: {lat: Number(item.latitude), lng: Number(item.longitude)},
             map: map,
@@ -187,6 +195,32 @@ function setMarkers(map, json_content) {
     }
 }
 
+function getInfoForMarkers() {
+    $.ajax({
+        url: 'http://localhost:8000/getTrainMarkers',
+        type: 'GET',
+        async: false,
+        success: function (response) {
+            ajax_response = response;
+            dropdown_options = ajax_response.response;
+            $("#inlineFormCustomSelectOrigin").empty();
+            $("#inlineFormCustomSelectDestination").empty();
+            $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
+            $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
+            var options = $("#inlineFormCustomSelectOrigin");
+            $.each(dropdown_options, function () {
+                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+            });
+            var options = $("#inlineFormCustomSelectDestination");
+            $.each(dropdown_options, function () {
+                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+            });
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
 /*--------------------------------- Ajax Functions ---------------------------------*/
 
 

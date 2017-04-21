@@ -216,7 +216,7 @@ def mapHomePage():
 
 @app.route('/getFlightMarkers', methods=['GET'])
 def getFlightMarkers():
-    nodesInfo = getAllNodes("tbl_flight_nodes")
+    nodesInfo = GetNodesInfoFromDB("tbl_flight_nodes")
     print(nodesInfo)
     nodes = formatNodesForMarkers(nodesInfo)
     json_content = {"response": nodes}
@@ -224,18 +224,16 @@ def getFlightMarkers():
 
 @app.route('/getTrainMarkers', methods=['GET'])
 def getTrainMarkers():
-    nodesInfo = getAllNodes("tbl_train_nodes")
-    print(nodesInfo)
+    nodesInfo = GetNodesInfoFromDB("tbl_train_nodes")
     nodes = formatNodesForMarkers(nodesInfo)
-    # print(nodes)
     json_content = {"response": nodes}
-    # print(json_content)
+    print(nodesInfo)
     return jsonify(json_content)
 
 
 @app.route('/getBusMarkers', methods=['GET'])
 def getBusMarkers():
-    nodesInfo = getAllNodes("tbl_bus_nodes")
+    nodesInfo = GetNodesInfoFromDB("tbl_bus_nodes")
     nodes = formatNodesForMarkers(nodesInfo)
     json_content = {"response": nodes}
     print(nodesInfo)
@@ -244,7 +242,7 @@ def getBusMarkers():
 
 @app.route('/getTaxiMarkers', methods=['GET'])
 def getTaxiMarkers():
-    nodesInfo = getAllNodes("tbl_taxi_nodes")
+    nodesInfo = GetNodesInfoFromDB("tbl_taxi_nodes")
     nodes = formatNodesForMarkers(nodesInfo)
     json_content = {"response": nodes}
     print(nodesInfo)
@@ -349,6 +347,7 @@ def GetNodeFromDB(id, table):
         cursor.close()
         connection.close()
 
+
 def GetNodesInfoFromDB(table):
     # sqlActions = "SELECT action_name FROM `web-bot`.tbl_action;"
     # Query all the rows from a database table
@@ -362,56 +361,25 @@ def GetNodesInfoFromDB(table):
         # executes the sql query to pull the tbl_action table values
         cursor.execute(sql)
         rowCount = cursor.fetchall()
-        for row in rowCount:
-            id.append(row[0])
-            name.append(row[1])
-            company.append(row[2])
-            latitude.append(str(row[3]))
-            longitude.append(str(row[4]))
-            route_id.append(row[5])
-            schedules.append(row[6])
-            passengers.append(str(row[7]))
-        nodeArray = [id, name, company, latitude, longitude, route_id, schedules, passengers]
-        # return array of array's with all the node's information.
-        # i.e: [ [ids],[names],[companies],[latitudes],[longitudes],[routes],[schedules],[passengers] ]
-        return nodeArray
+        nodes = []
+        columns = []
+        for i in range(0, len(rowCount[0])):
+            columns.append("column" + str(i))
+            # print(str(columns[i]))
+
+        for row in range (0, len(rowCount)):
+            temp = []
+            for col in range (0, len(rowCount[row])):
+                temp.append(str(rowCount[row][col]))
+            nodes.append(temp)
+        res = nodes
+        return res
     except Exception as e:
         # return json.dump({'error': str(e)})
         return print("failed")
     finally:
         cursor.close()
         connection.close()
-
-def getAllNodes(table):
-    try:
-        nodes = []
-        nodeArray = GetNodesInfoFromDB(table)
-        id = nodeArray[0]
-        name = nodeArray[1]
-        company = nodeArray[2]
-        latitude = nodeArray[3]
-        longitude = nodeArray[4]
-        route_id = nodeArray[5]
-        schedules = nodeArray[6]
-        passengers = nodeArray[7]
-        jsonNodeContent = {}
-        for i in range(0, len(id)):
-            temp = [str(id[i]),
-                    str(name[i]),
-                    str(company[i]),
-                    str(latitude[i]),
-                    str(longitude[i]),
-                    str(route_id[i]),
-                    str(schedules[i]),
-                    str(passengers[i])
-                    ]
-            nodes.append(temp)
-        res = nodes
-        # res = json.dumps({"Flight Nodes": nodes})
-        return res
-    except Exception as e:
-        # return json.dump({'error': str(e)})
-        return print(e)
 
 
 def formatNodesForMarkers(nodesInfo):
