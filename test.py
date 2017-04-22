@@ -269,18 +269,21 @@ def camilo():
 
 @app.route('/calculateRoute', methods=['POST'])
 def calculateRoute():
-    id1 = request.json['id1']
-    id2 = request.json['id2']
-    requestedGraph = request.json['graphName']
+    try:
+        id1 = int(request.json['id1'])
+        id2 = int(request.json['id2'])
+        requestedGraph = request.json['graphName']
 
-    for i in range (0, len(graphNames)):
-        if str(graphNamesString[i]) == requestedGraph:
-            graph = graphNames[i]
-            requestedGraph = graphNamesString[i]
+        for i in range (0, len(graphNames)):
+            if str(graphNamesString[i]) == request.json['graphName']:
+                graph = graphNames[i]
 
-    sp = nx.all_pairs_dijkstra_path(graph)
-    shortestPath = sp[id1][id2]
-    return str(shortestPath)
+        sp = nx.all_pairs_dijkstra_path(graph)
+        shortestPath = sp[id1][id2]
+        return str(shortestPath)
+    except Exception as e:
+        # return json.dump({'error': str(e)})
+        return e
 
 ###############-------------------------------------- Map Handler --------------------------------------################
 

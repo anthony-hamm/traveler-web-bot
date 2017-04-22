@@ -4,6 +4,7 @@
 
 var ajax_response;
 var transportType;
+var shortestPathIDs;
 
 function costaRicaMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -182,16 +183,25 @@ function calculateRoute() {
     var origin_value = $("#inlineFormCustomSelectOrigin option:selected").val();
     var destination_value = $("#inlineFormCustomSelectDestination option:selected").val();
     var SendInfo = {
-        "id1": [origin_value],
-        "id2": [destination_value],
-        "graphName": [transportType]
+        "id1": origin_value,
+        "id2": destination_value,
+        "graphName": transportType
     };
+    data = JSON.stringify(SendInfo)
     $.ajax({
-        type: 'post',
+        type: 'POST',
         url: 'http://localhost:8000/calculateRoute',
-        data: JSON.stringify(SendInfo),
-        contentType: "application/json; charset=utf-8",
-        traditional: true
+        contentType:"application/json",
+        data: data,
+        dataType: 'json',
+        // traditional: true,
+        success: function (response) {
+            shortestPathIDs = response;
+            alert(shortestPathIDs);
+        },
+        error: function (error) {
+            console.log(error);
+        }
     });
 }
 /*--------------------------------- Ajax Functions ---------------------------------*/
