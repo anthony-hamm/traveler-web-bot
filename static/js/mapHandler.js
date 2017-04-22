@@ -185,6 +185,7 @@ function setMarkers(map, ajax_content) {
 }
 
 function calculateRoute() {
+    initMap(transportId);
     var origin_value = $("#inlineFormCustomSelectOrigin option:selected").val();
     var destination_value = $("#inlineFormCustomSelectDestination option:selected").val();
     var SendInfo = {
@@ -216,8 +217,14 @@ function calculateRoute() {
 function generatePath(shortestPathIDs) {
     for (var i = 0; i < ajax_response.response.length; i++) {
         var item = ajax_response.response[i];
-        temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
-        flightPlanCoordinates.push(temp);
+        for (var j = 0; j < shortestPathIDs.length; j++) {
+            if (shortestPathIDs[j] == item.id){
+                temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
+                flightPlanCoordinates.push(temp);
+            }
+        }
+        // temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
+        // flightPlanCoordinates.push(temp);
     }
 
     var flightPath = new google.maps.Polyline({
