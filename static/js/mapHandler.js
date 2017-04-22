@@ -29,7 +29,7 @@ function costaRicaMap() {
 
 function initMap(transport_id) {
     transport_id = transport_id;
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         zoom: 8,
         center: {lat: 9.934739, lng: -84.087502},
         styles: [
@@ -229,14 +229,23 @@ function calculateRoute() {
 // }
 
 function generatePath() {
+
     flightPlanCoordinates = [];
     for (var i = 0; i < ajax_response.response.length; i++) {
         var item = ajax_response.response[i];
-        flightPlanCoordinates.push({lat: Number(item.latitude), lng: Number(item.longitude)});
+        // flightPlanCoordinates.push("{lat: " + Number(item.latitude) + ", lng: " + Number(item.longitude)+ "}");
+        flightPlanCoordinates.push("{" + Number(item.latitude), Number(item.longitude)+ "}");
     }
     alert(flightPlanCoordinates);
     // alert(flightPlanCoordinates);
 
+    // var flightPlanCoordinates = [
+    //     {lat: 10.542809, lng: -85.596905},
+    //     {lat: 10.196989, lng: -83.388653},
+    //     {lat: 8.603741, lng: -82.971173},
+    //     {lat: 9.998669, lng: -84.203872}
+    // ];
+    var teta = "[" + flightPlanCoordinates + "]";
     var flightPath = new google.maps.Polyline({
         path: flightPlanCoordinates,
         geodesic: true,
