@@ -5,6 +5,9 @@
 var ajax_response;
 var transportType;
 var shortestPathIDs;
+var map;
+var flightPlanCoordinates = [];
+var transport_id;
 
 function costaRicaMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -25,6 +28,7 @@ function costaRicaMap() {
 
 
 function initMap(transport_id) {
+    transport_id = transport_id;
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 8,
         center: {lat: 9.934739, lng: -84.087502},
@@ -197,13 +201,51 @@ function calculateRoute() {
         // traditional: true,
         success: function (response) {
             shortestPathIDs = response;
-            alert(shortestPathIDs);
+            // alert(shortestPathIDs);
+            // console.log(shortestPathIDs[0]);
+            // console.log(shortestPathIDs[1]);
+            // console.log(shortestPathIDs[2]);
+            // console.log(ajax_response['response'][0].['id']);
         },
         error: function (error) {
             console.log(error);
         }
     });
+    // fillCoordinates();
+    generatePath();
+    // flightPath.setMap(map);
+
 }
+//
+// function fillCoordinates() {
+//     flightPlanCoordinates = [];
+//     for (var i = 0; i < ajax_content.response.length; i++) {
+//         var item = ajax_content.response[i];
+//
+//         for (var j = 0; j < item.length; j++){
+//             flightPlanCoordinates.append({lat: item.latitude, lng: item.longitude});
+//         }
+//     }
+// }
+
+function generatePath() {
+    flightPlanCoordinates = [];
+    for (var i = 0; i < ajax_response.response.length; i++) {
+        var item = ajax_response.response[i];
+        flightPlanCoordinates.push({lat: Number(item.latitude), lng: Number(item.longitude)});
+    }
+    alert(flightPlanCoordinates);
+    // alert(flightPlanCoordinates);
+
+    var flightPath = new google.maps.Polyline({
+        path: flightPlanCoordinates,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    });
+    flightPath.setMap(map);
+}
+
+
 /*--------------------------------- Ajax Functions ---------------------------------*/
-
-

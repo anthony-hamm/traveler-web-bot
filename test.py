@@ -272,7 +272,6 @@ def calculateRoute():
     try:
         id1 = int(request.json['id1'])
         id2 = int(request.json['id2'])
-        requestedGraph = request.json['graphName']
 
         for i in range (0, len(graphNames)):
             if str(graphNamesString[i]) == request.json['graphName']:
