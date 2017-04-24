@@ -70,6 +70,21 @@ function initMap(transport_id) {
                     $.each(dropdown_options, function () {
                         options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
                     });
+                    $("#inlineFormCustomSelectOrigin").change(function(){
+                       $('#tab').append($('<tr>')).empty();
+                       var or_history = $('#inlineFormCustomSelectOrigin option:selected').text();
+                       $('#tab').append($('<tr>').append(or_history));
+
+                    });
+
+                    $("#inlineFormCustomSelectDestination").change(function(){
+                        $('#tab2').append($('<tr>')).empty();
+                        var or_destination = $('#inlineFormCustomSelectDestination   option:selected').text();
+                        $('#tab2').append($('<tr>').append(or_destination));
+                    });
+
+
+
                 },
                 error: function (error) {
                     console.log(error);
