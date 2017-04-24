@@ -5,6 +5,7 @@
 var ajax_response;
 var transportType;
 var shortestPathIDs;
+var teta;
 var map;
 var flightPlanCoordinates = [];
 var transport_id;
@@ -199,6 +200,7 @@ function setMarkers(map, ajax_content) {
 }
 
 function calculateRoute() {
+    initMap(transportId);
     var origin_value = $("#inlineFormCustomSelectOrigin option:selected").val();
     var destination_value = $("#inlineFormCustomSelectDestination option:selected").val();
     var SendInfo = {
@@ -206,6 +208,7 @@ function calculateRoute() {
         "id2": destination_value,
         "graphName": transportType
     };
+    var teta;
     data = JSON.stringify(SendInfo)
     $.ajax({
         type: 'POST',
@@ -213,54 +216,32 @@ function calculateRoute() {
         contentType:"application/json",
         data: data,
         dataType: 'json',
+        async: false,
         // traditional: true,
         success: function (response) {
             shortestPathIDs = response;
-            // alert(shortestPathIDs);
-            // console.log(shortestPathIDs[0]);
-            // console.log(shortestPathIDs[1]);
-            // console.log(shortestPathIDs[2]);
-            // console.log(ajax_response['response'][0].['id']);
         },
         error: function (error) {
             console.log(error);
         }
     });
-    // fillCoordinates();
-    generatePath();
-    // flightPath.setMap(map);
-
+    generatePath(shortestPathIDs);
 }
-//
-// function fillCoordinates() {
-//     flightPlanCoordinates = [];
-//     for (var i = 0; i < ajax_content.response.length; i++) {
-//         var item = ajax_content.response[i];
-//
-//         for (var j = 0; j < item.length; j++){
-//             flightPlanCoordinates.append({lat: item.latitude, lng: item.longitude});
-//         }
-//     }
-// }
 
-function generatePath() {
 
-    flightPlanCoordinates = [];
+function generatePath(shortestPathIDs) {
     for (var i = 0; i < ajax_response.response.length; i++) {
         var item = ajax_response.response[i];
-        // flightPlanCoordinates.push("{lat: " + Number(item.latitude) + ", lng: " + Number(item.longitude)+ "}");
-        flightPlanCoordinates.push("{" + Number(item.latitude), Number(item.longitude)+ "}");
+        for (var j = 0; j < shortestPathIDs.length; j++) {
+            if (shortestPathIDs[j] == item.id){
+                temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
+                flightPlanCoordinates.push(temp);
+            }
+        }
+        // temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
+        // flightPlanCoordinates.push(temp);
     }
-    alert(flightPlanCoordinates);
-    // alert(flightPlanCoordinates);
 
-    // var flightPlanCoordinates = [
-    //     {lat: 10.542809, lng: -85.596905},
-    //     {lat: 10.196989, lng: -83.388653},
-    //     {lat: 8.603741, lng: -82.971173},
-    //     {lat: 9.998669, lng: -84.203872}
-    // ];
-    var teta = "[" + flightPlanCoordinates + "]";
     var flightPath = new google.maps.Polyline({
         path: flightPlanCoordinates,
         geodesic: true,
@@ -270,6 +251,4 @@ function generatePath() {
     });
     flightPath.setMap(map);
 }
-
-
 /*--------------------------------- Ajax Functions ---------------------------------*/
