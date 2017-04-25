@@ -50,134 +50,19 @@ function initMap(transport_id) {
     switch (transport_id) {
         // ID:1 == Flight Transport Type
         case 1:
-            // function getFlightMarkers() {
-            $.ajax({
-                url: 'http://localhost:8000/getFlightMarkers',
-                type: 'GET',
-                async: false,
-                success: function (response) {
-                    transportType = "flight_graph";
-                    ajax_response = response;
-                    dropdown_options = ajax_response.response;
-                    $("#inlineFormCustomSelectOrigin").empty();
-                    $("#inlineFormCustomSelectDestination").empty();
-                    $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
-                    $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
-                    var options = $("#inlineFormCustomSelectOrigin");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                    var options = $("#inlineFormCustomSelectDestination");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                    $("#inlineFormCustomSelectOrigin").change(function(){
-                       $('#tab').append($('<tr>')).empty();
-                       var or_history = $('#inlineFormCustomSelectOrigin option:selected').text();
-                       $('#tab').append($('<tr>').append(or_history));
-
-                    });
-
-                    $("#inlineFormCustomSelectDestination").change(function(){
-                        $('#tab2').append($('<tr>')).empty();
-                        var or_destination = $('#inlineFormCustomSelectDestination   option:selected').text();
-                        $('#tab2').append($('<tr>').append(or_destination));
-                    });
-
-
-
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
+            getMarkers('getFlightMarkers','flight_graph');
             break;
         // ID:2 == Train Transport Type
         case 2:
-            // function getTrainMarkers() {
-            $.ajax({
-                url: 'http://localhost:8000/getTrainMarkers',
-                type: 'GET',
-                async: false,
-                success: function (response) {
-                    transportType = "train_graph";
-                    ajax_response = response;
-                    dropdown_options = ajax_response.response;
-                    $("#inlineFormCustomSelectOrigin").empty();
-                    $("#inlineFormCustomSelectDestination").empty();
-                    $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
-                    $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
-                    var options = $("#inlineFormCustomSelectOrigin");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                    var options = $("#inlineFormCustomSelectDestination");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
+            getMarkers('getTrainMarkers','flight_graph');
             break;
         // ID:3 == Bus Transport Type
         case 3:
-            // function getBusMarkers() {
-            $.ajax({
-                url: 'http://localhost:8000/getBusMarkers',
-                type: 'GET',
-                async: false,
-                success: function (response) {
-                    transportType = "bus_graph";
-                    ajax_response = response;
-                    dropdown_options = ajax_response.response;
-                    $("#inlineFormCustomSelectOrigin").empty();
-                    $("#inlineFormCustomSelectDestination").empty();
-                    $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
-                    $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
-                    var options = $("#inlineFormCustomSelectOrigin");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                    var options = $("#inlineFormCustomSelectDestination");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
+            getMarkers('getBusMarkers','bus_graph');
             break;
         // ID:4 == Taxi Transport Type
         case 4:
-            // function getTaxiMarkers() {
-            $.ajax({
-                url: 'http://localhost:8000/getTaxiMarkers',
-                type: 'GET',
-                async: false,
-                success: function (response) {
-                    transportType = "taxi_graph";
-                    ajax_response = response;
-                    dropdown_options = ajax_response.response;
-                    $("#inlineFormCustomSelectOrigin").empty();
-                    $("#inlineFormCustomSelectDestination").empty();
-                    $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
-                    $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
-                    var options = $("#inlineFormCustomSelectOrigin");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                    var options = $("#inlineFormCustomSelectDestination");
-                    $.each(dropdown_options, function () {
-                        options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-                    });
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
+            getMarkers('getTaxiMarkers','taxi_graph');
             break;
     }
     setMarkers(map, ajax_response);
@@ -252,3 +137,44 @@ function generatePath(shortestPathIDs) {
     flightPath.setMap(map);
 }
 /*--------------------------------- Ajax Functions ---------------------------------*/
+
+
+function getMarkers(urlParameter, type) {
+    $.ajax({
+        url: 'http://localhost:8000/' + urlParameter,
+        type: 'GET',
+        async: false,
+        success: function (response) {
+            transportType = type;
+            ajax_response = response;
+            dropdown_options = ajax_response.response;
+            $("#inlineFormCustomSelectOrigin").empty();
+            $("#inlineFormCustomSelectDestination").empty();
+            $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
+            $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
+            var options = $("#inlineFormCustomSelectOrigin");
+            $.each(dropdown_options, function () {
+                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+            });
+            var options = $("#inlineFormCustomSelectDestination");
+            $.each(dropdown_options, function () {
+                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+            });
+            $("#inlineFormCustomSelectOrigin").change(function () {
+                $('#tab').append($('<tr>')).empty();
+                var or_history = $('#inlineFormCustomSelectOrigin option:selected').text();
+                $('#tab').append($('<tr>').append(or_history));
+
+            });
+
+            $("#inlineFormCustomSelectDestination").change(function () {
+                $('#tab2').append($('<tr>')).empty();
+                var or_destination = $('#inlineFormCustomSelectDestination   option:selected').text();
+                $('#tab2').append($('<tr>').append(or_destination));
+            });
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    })
+};
