@@ -147,26 +147,31 @@ function getMarkers(urlParameter, type) {
         success: function (response) {
             transportType = type;
             ajax_response = response;
+            //Load the options tied up to each transportation method
             dropdown_options = ajax_response.response;
+            //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
             $("#inlineFormCustomSelectOrigin").empty();
             $("#inlineFormCustomSelectDestination").empty();
             $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
             $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
+            //Add dynamically the origins into the dropdown
             var options = $("#inlineFormCustomSelectOrigin");
             $.each(dropdown_options, function () {
                 options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
             });
+            //Add dynamically the destination into the dropdown
             var options = $("#inlineFormCustomSelectDestination");
             $.each(dropdown_options, function () {
                 options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
             });
+            //Add dynamically the option selected into the table origin
             $("#inlineFormCustomSelectOrigin").change(function () {
                 $('#tab').append($('<tr>')).empty();
                 var or_history = $('#inlineFormCustomSelectOrigin option:selected').text();
                 $('#tab').append($('<tr>').append(or_history));
 
             });
-
+             //Add dynamically the option selected into the table destination
             $("#inlineFormCustomSelectDestination").change(function () {
                 $('#tab2').append($('<tr>')).empty();
                 var or_destination = $('#inlineFormCustomSelectDestination   option:selected').text();
