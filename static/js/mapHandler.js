@@ -85,7 +85,7 @@ function setMarkers(map, ajax_content) {
 }
 
 function calculateRoute() {
-    initMap(transportId);
+    // initMap(transportId);
     var origin_value = $("#inlineFormCustomSelectOrigin option:selected").val();
     var destination_value = $("#inlineFormCustomSelectDestination option:selected").val();
     var SendInfo = {
@@ -136,6 +136,8 @@ function generatePath(shortestPathIDs) {
     });
     flightPath.setMap(map);
 }
+
+
 /*--------------------------------- Ajax Functions ---------------------------------*/
 
 
@@ -150,36 +152,44 @@ function getMarkers(urlParameter, type) {
             //Load the options tied up to each transportation method
             dropdown_options = ajax_response.response;
             //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
-            $("#inlineFormCustomSelectOrigin").empty();
-            $("#inlineFormCustomSelectDestination").empty();
-            $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
-            $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
+            cleanDropdowns();
             //Add dynamically the origins into the dropdown
-            var options = $("#inlineFormCustomSelectOrigin");
-            $.each(dropdown_options, function () {
-                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-            });
+            fillDropdown("#inlineFormCustomSelectOrigin", dropdown_options);
             //Add dynamically the destination into the dropdown
-            var options = $("#inlineFormCustomSelectDestination");
-            $.each(dropdown_options, function () {
-                options.append($("<option />").val(this.id).text(this.id + " - " + this.name));
-            });
+            fillDropdown("#inlineFormCustomSelectDestination", dropdown_options);
             //Add dynamically the option selected into the table origin
-            $("#inlineFormCustomSelectOrigin").change(function () {
-                $('#tab').append($('<tr>')).empty();
-                var or_history = $('#inlineFormCustomSelectOrigin option:selected').text();
-                $('#tab').append($('<tr>').append(or_history));
-
-            });
-             //Add dynamically the option selected into the table destination
-            $("#inlineFormCustomSelectDestination").change(function () {
-                $('#tab2').append($('<tr>')).empty();
-                var or_destination = $('#inlineFormCustomSelectDestination   option:selected').text();
-                $('#tab2').append($('<tr>').append(or_destination));
-            });
+            fillInfoTables("#inlineFormCustomSelectOrigin", '#tab');
+            //Add dynamically the option selected into the table destination
+            fillInfoTables("#inlineFormCustomSelectDestination", '#tab2');
         },
         error: function (error) {
             console.log(error);
         }
     })
 };
+
+
+function cleanDropdowns() {
+    //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
+    $("#inlineFormCustomSelectOrigin").empty();
+    $("#inlineFormCustomSelectDestination").empty();
+    $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
+    $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
+}
+
+
+function fillDropdown(dropdownID, dropdownOptions){
+    var dropdown = $(dropdownID);
+    $.each(dropdownOptions, function () {
+        dropdown.append($("<option />").val(this.id).text(this.id + " - " + this.name));
+    });
+}
+
+
+function  fillInfoTables(tableID, row) {
+    $(tableID).change(function () {
+        $(row).append($('<tr>')).empty();
+        var dropdown = $(tableID + ' option:selected').text();
+        $(row).append($('<tr>').append(dropdown));
+    });
+}
