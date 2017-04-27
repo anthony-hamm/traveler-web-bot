@@ -50,11 +50,12 @@ function initMap(transport_id) {
     switch (transport_id) {
         // ID:1 == Flight Transport Type
         case 1:
+            //TODO: modificar back-end de getMarkers para retornar toda la información del nodo.
             getMarkers('getFlightMarkers','flight_graph');
             break;
         // ID:2 == Train Transport Type
         case 2:
-            getMarkers('getTrainMarkers','flight_graph');
+            getMarkers('getTrainMarkers','train_graph');
             break;
         // ID:3 == Bus Transport Type
         case 3:
@@ -121,6 +122,7 @@ function generatePath(shortestPathIDs) {
             if (shortestPathIDs[j] == item.id){
                 temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
                 flightPlanCoordinates.push(temp);
+                // TODO: Agregar aquí la generación del PATH para cada par en vez de hacerlo afuera.
             }
         }
         // temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
