@@ -218,36 +218,36 @@ def mapHomePage():
 @app.route('/getFlightMarkers', methods=['GET'])
 def getFlightMarkers():
     nodesInfo = GetNodesInfoFromDB("tbl_flight_nodes")
-    print(nodesInfo)
-    nodes = formatNodesForMarkers(nodesInfo)
+    nodes = formatFlightNodes(nodesInfo)
     json_content = {"response": nodes}
+    print(nodes)
     return jsonify(json_content)
 
 
 @app.route('/getTrainMarkers', methods=['GET'])
 def getTrainMarkers():
     nodesInfo = GetNodesInfoFromDB("tbl_train_nodes")
-    nodes = formatNodesForMarkers(nodesInfo)
+    nodes = formatTrainNodes(nodesInfo)
     json_content = {"response": nodes}
-    print(nodesInfo)
+    print(nodes)
     return jsonify(json_content)
 
 
 @app.route('/getBusMarkers', methods=['GET'])
 def getBusMarkers():
     nodesInfo = GetNodesInfoFromDB("tbl_bus_nodes")
-    nodes = formatNodesForMarkers(nodesInfo)
+    nodes = formatBusNodes(nodesInfo)
     json_content = {"response": nodes}
-    print(nodesInfo)
+    print(nodes)
     return jsonify(json_content)
 
 
 @app.route('/getTaxiMarkers', methods=['GET'])
 def getTaxiMarkers():
     nodesInfo = GetNodesInfoFromDB("tbl_taxi_nodes")
-    nodes = formatNodesForMarkers(nodesInfo)
+    nodes = formatTaxiNodes(nodesInfo)
     json_content = {"response": nodes}
-    print(nodesInfo)
+    print(nodes)
     return jsonify(json_content)
 
 
@@ -408,16 +408,87 @@ def GetNodesInfoFromDB(table):
         connection.close()
 
 
-def formatNodesForMarkers(nodesInfo):
+# def formatNodesForMarkers(nodesInfo):
+#     nodesFormated = []
+#     for i in range(0, len(nodesInfo)):
+#         temp = {"id": nodesInfo[i][0],
+#                 "name": nodesInfo[i][1],
+#                 "latitude": nodesInfo[i][3],
+#                 "longitude": nodesInfo[i][4]
+#                 }
+#         nodesFormated.append(temp)
+#         print(nodesFormated)
+#     return nodesFormated
+
+
+def formatFlightNodes(nodesInfo):
     nodesFormated = []
     for i in range(0, len(nodesInfo)):
         temp = {"id": nodesInfo[i][0],
                 "name": nodesInfo[i][1],
+                "company": nodesInfo[i][2],
                 "latitude": nodesInfo[i][3],
-                "longitude": nodesInfo[i][4]
+                "longitude": nodesInfo[i][4],
+                "route_id": nodesInfo[i][5],
+                "schedules": nodesInfo[i][6],
+                "passengers": nodesInfo[i][7]
                 }
         nodesFormated.append(temp)
+        print(nodesFormated)
     return nodesFormated
+
+
+def formatTrainNodes(nodesInfo):
+    nodesFormated = []
+    for i in range(0, len(nodesInfo)):
+        temp = {"id": nodesInfo[i][0],
+                "name": nodesInfo[i][1],
+                "company": nodesInfo[i][2],
+                "latitude": nodesInfo[i][3],
+                "longitude": nodesInfo[i][4],
+                "route_id": nodesInfo[i][5],
+                "schedules": nodesInfo[i][6]
+                }
+        nodesFormated.append(temp)
+        print(nodesFormated)
+    return nodesFormated
+
+
+def formatBusNodes(nodesInfo):
+    nodesFormated = []
+    for i in range(0, len(nodesInfo)):
+        temp = {"id": nodesInfo[i][0],
+                "name": nodesInfo[i][1],
+                "company": nodesInfo[i][2],
+                "latitude": nodesInfo[i][3],
+                "longitude": nodesInfo[i][4],
+                "route_id": nodesInfo[i][5],
+                "driver": nodesInfo[i][6],
+                "capacity": nodesInfo[i][7]
+                }
+        nodesFormated.append(temp)
+        print(nodesFormated)
+    return nodesFormated
+
+
+def formatTaxiNodes(nodesInfo):
+    nodesFormated = []
+    for i in range(0, len(nodesInfo)):
+        temp = {"id": nodesInfo[i][0],
+                "name": nodesInfo[i][1],
+                "company": nodesInfo[i][2],
+                "latitude": nodesInfo[i][3],
+                "longitude": nodesInfo[i][4],
+                "route_id": nodesInfo[i][5],
+                "driver_id": nodesInfo[i][6],
+                "driver_name": nodesInfo[i][7],
+                "driver_lastName": nodesInfo[i][8],
+                "kilometer_cost": nodesInfo[i][9]
+                }
+        nodesFormated.append(temp)
+        print(nodesFormated)
+    return nodesFormated
+
 
 ###############----------------------------------- Graph Miscellaneous ---------------------------------################
 

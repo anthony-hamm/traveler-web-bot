@@ -116,12 +116,16 @@ function calculateRoute() {
 
 
 function generatePath(shortestPathIDs) {
-    for (var i = 0; i < ajax_response.response.length; i++) {
-        var item = ajax_response.response[i];
+    // alert(shortestPathIDs);
+    // alert(ajax_response.response.length);
+    // alert(shortestPathIDs.length);
+    for (var node = 0; node < ajax_response.response.length; node++) {
+        var item = ajax_response.response[node];
         for (var j = 0; j < shortestPathIDs.length; j++) {
             if (shortestPathIDs[j] == item.id){
                 temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
                 flightPlanCoordinates.push(temp);
+                
                 // TODO: Agregar aquí la generación del PATH para cada par en vez de hacerlo afuera.
             }
         }
@@ -190,6 +194,7 @@ function fillDropdown(dropdownID, dropdownOptions){
 
 function  fillInfoTables(tableID, row) {
     $(tableID).change(function () {
+        alert(ajax_response.response[0].name);
         $(row).append($('<tr>')).empty();
         var dropdown = $(tableID + ' option:selected').text();
         $(row).append($('<tr>').append(dropdown));
