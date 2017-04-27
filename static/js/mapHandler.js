@@ -3,6 +3,7 @@
  */
 
 var ajax_response;
+var nodesFromDB;
 var transportType;
 var shortestPathIDs;
 var teta;
@@ -70,8 +71,8 @@ function initMap(transport_id) {
 }
 
 function setMarkers(map, ajax_content) {
-    for (var i = 0; i < ajax_content.response.length; i++) {
-        var item = ajax_content.response[i];
+    for (var i = 0; i < ajax_content.length; i++) {
+        var item = ajax_content[i];
         var marker = new google.maps.Marker({
             position: {lat: Number(item.latitude), lng: Number(item.longitude)},
             map: map,
@@ -119,8 +120,8 @@ function generatePath(shortestPathIDs) {
     // alert(shortestPathIDs);
     // alert(ajax_response.response.length);
     // alert(shortestPathIDs.length);
-    for (var node = 0; node < ajax_response.response.length; node++) {
-        var item = ajax_response.response[node];
+    for (var node = 0; node < ajax_response.length; node++) {
+        var item = ajax_response[node];
         for (var j = 0; j < shortestPathIDs.length; j++) {
             if (shortestPathIDs[j] == item.id){
                 temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
@@ -156,13 +157,13 @@ function getMarkers(urlParameter, type) {
             transportType = type;
             ajax_response = response;
             //Load the options tied up to each transportation method
-            dropdown_options = ajax_response.response;
+            ajax_response = ajax_response.response;
             //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
             cleanDropdowns();
             //Add dynamically the origins into the dropdown
-            fillDropdown("#inlineFormCustomSelectOrigin", dropdown_options);
+            fillDropdown("#inlineFormCustomSelectOrigin", ajax_response);
             //Add dynamically the destination into the dropdown
-            fillDropdown("#inlineFormCustomSelectDestination", dropdown_options);
+            fillDropdown("#inlineFormCustomSelectDestination", ajax_response);
             //Add dynamically the option selected into the table origin
             fillInfoTables("#inlineFormCustomSelectOrigin", '#tab');
             //Add dynamically the option selected into the table destination
@@ -194,7 +195,8 @@ function fillDropdown(dropdownID, dropdownOptions){
 
 function  fillInfoTables(tableID, row) {
     $(tableID).change(function () {
-        alert(ajax_response.response[0].name);
+        alert(ajax_response[0].name);
+        alert(nodesFromDB[0].name);
         $(row).append($('<tr>')).empty();
         var dropdown = $(tableID + ' option:selected').text();
         $(row).append($('<tr>').append(dropdown));
