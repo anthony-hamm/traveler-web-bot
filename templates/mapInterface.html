@@ -1,63 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Simple Polylines</title>
- <link rel="stylesheet" type="text/css" href="../static/css/styles.css" />
- <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-3.3.7-dist/css/bootstrap.css" />
- <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-3.3.7-dist/css/bootstrap-theme.css" />
-  </head>
-  <body>
-  <div class="page-header">
-    <h2>Transportation System</h2>
-  </div>
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-3.3.7-dist/css/bootstrap-theme.css"/>
+</head>
+<body>
 
-  <div class="container">
-      <button type="button" class="btn btn-primary" onclick="initMap(1)">Flights</button>
-      <button type="button" class="btn btn-primary" onclick="initMap(2)">Train</button>
-      <button type="button" class="btn btn-primary" onclick="initMap(3)">Bus</button>
-      <button type="button" class="btn btn-primary" onclick="initMap(4)">Taxi</button>
-  </div>
+<div class="page-header">
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Home</a>
+                    </li>
+                    <li role="presentation"><a href="showSignIn">Sign In</a>
+                    </li>
+                    <li role="presentation"><a href="showSignUp">Sign Up</a>
+                    </li>
+                    <li role="presentation"><a href="mapHomePage">Map</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">HammCam Traverler Web-Bot</h3>
+        </div>
+    </div>
+</div>
 
-  <div class="col-xs-12">
-      <div class="col-xs-6">
-          <div class="map-container">
-              <div id="map"></div>
-          </div>
-      </div>
-      <div class="col-xs-6 center-block">
-          <div class=" container-fluid">
-                  <div class="form-group">
-                      <div class="col-xs-6">
-                          <h4>Origin</h4>
-                          <select class="custom-select mb-4 mr-sm-4 mb-sm-0" id="inlineFormCustomSelectOrigin" >
-                              <option selected>Choose Origin</option>
-                          </select>
-                      </div>
-                      <div class="col-xs-6">
-                          <h4>Destination</h4>
-                          <select class="custom-select mb-4 mr-sm-2 mb-sm-4" id="inlineFormCustomSelectDestination">
-                              <option selected>Choose Origin</option>
-                          </select>
-                      </div>
-                  </div>
-
-                   <div class="col-xs-6 option_space">
-                       <button type="submit" class="btn btn-primary" onclick="calculateRoute()">Submit</button>
-               </div>
-          </div>
-          <div class="col-xs-6">
+<div class="col-xs-12">
+    <div class="col-xs-6">
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+    <div class="col-xs-6 center-block">
+        <div class="buttons_space">
+            <a type="button" class="btn btn-primary" onclick="initMap(1)"><i class="fa fa-plane fa-2x"></i></a>
+            <a type="button" class="btn btn-primary" onclick="initMap(2)"><i class="fa fa-subway fa-2x"></i></a>
+            <a type="button" class="btn btn-primary" onclick="initMap(3)"><i class="fa fa-bus fa-2x"></i></a>
+            <a type="button" class="btn btn-primary" onclick="initMap(4)"><i class="fa fa-taxi fa-2x"></i></a>
+        </div>
+        <div class=" container-fluid">
+            <div class="form-group">
+                <div class="col-xs-6">
+                    <h4>Origin</h4>
+                    <select class="custom-select mb-4 mr-sm-4 mb-sm-0" id="inlineFormCustomSelectOrigin">
+                        <option selected>Choose Origin</option>
+                    </select>
+                </div>
+                <div class="col-xs-6">
+                    <h4>Destination</h4>
+                    <select class="custom-select mb-4 mr-sm-2 mb-sm-4" id="inlineFormCustomSelectDestination">
+                        <option selected>Choose Origin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-6 option_space">
+                <button type="submit" class="btn btn-primary" onclick="calculateRoute()">Get the Best Route</button>
+            </div>
+        </div>
+        <div class="col-xs-6">
             <div class="container-fluid ">
-                <table class="table" >
-                    <thead >
+                <table class="table">
+                    <thead>
                     <tr>
-                        <th>History of Origins</th>
+                        <th>Origin Information</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr id="tab">
-                        <td>Your Origin</td>
+                        <td>Please select your Origin</td>
                     </tr>
                     </tbody>
                 </table>
@@ -68,57 +83,28 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>Destination</th>
+                        <th>Destination Information</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr id="tab2">
-                        <td>Your Destination</td>
+                        <td>Please select your Destination</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <!--<div class="container-fluid">-->
-            <!--<h2>Basic Table</h2>-->
-            <!--<p>The .table class adds basic styling (light padding and only horizontal dividers) to a table:</p>-->
-            <!--<table class="table">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th>Firstname</th>-->
-                    <!--<th>Lastname</th>-->
-                    <!--<th>Email</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr>-->
-                    <!--<td>John</td>-->
-                    <!--<td>Doe</td>-->
-                    <!--<td>john@example.com</td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<td>Mary</td>-->
-                    <!--<td>Moe</td>-->
-                    <!--<td>mary@example.com</td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<td>July</td>-->
-                    <!--<td>Dooley</td>-->
-                    <!--<td>july@example.com</td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
-        <!--</div>-->
-      </div>
-  </div>
+    </div>
+</div>
 
-  <script src="https://code.jquery.com/jquery-2.2.4.min.js" ></script>
-  <script type="text/javascript" src="../static/js/bootstrap.js"></script>
-  <script type="text/javascript" src="../static/js/mapHandler.js"></script>
-  <script type="text/javascript" src="../static/js/bootstrap.js"></script>
-  <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyoCNutbdORchm3ZdsArCTYSfnHdcAQNk&callback=costaRicaMap">
-  </script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+<script type="text/javascript" src="../static/js/mapHandler.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyoCNutbdORchm3ZdsArCTYSfnHdcAQNk&callback=costaRicaMap">
+</script>
 
-  </body>
+</body>
 </html>

@@ -11,7 +11,7 @@ var map;
 var flightPlanCoordinates = [];
 var transport_id;
 var flightPath;
-var numberOfEdges;
+var calcutatingRoute = false;
 
 function costaRicaMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -47,28 +47,31 @@ function initMap(transportID) {
             }
         ]
     });
+
+    // var ajax_response;
+
     switch (transport_id) {
         // ID:1 == Flight Transport Type
         case 1:
             //TODO: modificar back-end de getMarkers para retornar toda la información del nodo.
-            getMarkers('getFlightMarkers','flight_graph');
+            getMarkers('getFlightMarkers', 'flight_graph');
             break;
         // ID:2 == Train Transport Type
         case 2:
-            getMarkers('getTrainMarkers','train_graph');
+            getMarkers('getTrainMarkers', 'train_graph');
+            // cleanTables();
             break;
         // ID:3 == Bus Transport Type
         case 3:
-            getMarkers('getBusMarkers','bus_graph');
+            getMarkers('getBusMarkers', 'bus_graph');
             break;
         // ID:4 == Taxi Transport Type
         case 4:
-            getMarkers('getTaxiMarkers','taxi_graph');
+            getMarkers('getTaxiMarkers', 'taxi_graph');
             break;
     }
     setMarkers(map, ajax_response);
 }
-
 
 function setMarkers(map, ajax_content) {
     for (var i = 0; i < ajax_content.length; i++) {
@@ -86,8 +89,9 @@ function setMarkers(map, ajax_content) {
     }
 }
 
-
 function calculateRoute() {
+    // initMap(transportId);
+    calcutatingRoute = true;
     var origin_value = $("#inlineFormCustomSelectOrigin option:selected").val();
     var destination_value = $("#inlineFormCustomSelectDestination option:selected").val();
     var SendInfo = {
@@ -100,7 +104,7 @@ function calculateRoute() {
     $.ajax({
         type: 'POST',
         url: 'http://localhost:8000/calculateRoute',
-        contentType:"application/json",
+        contentType: "application/json",
         data: data,
         dataType: 'json',
         async: false,
@@ -113,17 +117,14 @@ function calculateRoute() {
         }
     });
     generatePath(shortestPathIDs);
-    alert("Number of Edges: " + numberOfEdges);
 }
-
 
 // Print the shortes path between origin and destination
 function generatePath(shortestPathIDs) {
     // Clean paths from map by reloding the map and markers
     initMap(transport_id);
     // Get the corresponding edges from the received nodes
-    numberOfEdges = getEdgesFromPath(shortestPathIDs).length;
-    var pathEdges =  getEdgesFromPath(shortestPathIDs);
+    var pathEdges = getEdgesFromPath(shortestPathIDs);
     // Iterate through each Edge and print the corresponding path
     for (var i = 0; i < pathEdges.length; i++) {
         // Get latitude and longitude from edge pair
@@ -140,23 +141,22 @@ function generatePath(shortestPathIDs) {
     }
 }
 
-
 function getEdgesFromPath(nodes) {
     pathEdges = [];
     for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i+1]){
-            var temp = [nodes[i], nodes[i+1]];
+        if (nodes[i + 1]) {
+            var temp = [nodes[i], nodes[i + 1]];
             pathEdges.push(temp);
         }
     }
     return pathEdges;
 }
 
-function getLatLngFromEdge(edgePair) {
+function getLatLngFromEdge(test) {
     var coordinatesArray = [];
-    for (var i = 0; i < edgePair.length; i++) {
+    for (var i = 0; i < test.length; i++) {
         for (var node = 0; node < ajax_response.length; node++) {
-            if (edgePair[i] == ajax_response[node].id){
+            if (test[i] == ajax_response[node].id) {
                 var item = ajax_response[node];
                 temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
                 coordinatesArray.push(temp);
@@ -165,6 +165,9 @@ function getLatLngFromEdge(edgePair) {
     }
     return coordinatesArray;
 }
+
+
+/*--------------------------------- Ajax Functions ---------------------------------*/
 
 
 function getMarkers(urlParameter, type) {
@@ -177,8 +180,12 @@ function getMarkers(urlParameter, type) {
             ajax_response = response;
             //Load the options tied up to each transportation method
             ajax_response = ajax_response.response;
-            //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
-            cleanDropdowns();
+            if (calcutatingRoute == false) {
+                //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
+                cleanDropdowns();
+                //Clean the table of origin and destination when entering the transportation methods and also appends the default option
+                cleanTables();
+            }
             //Add dynamically the origins into the dropdown
             fillDropdown("#inlineFormCustomSelectOrigin", ajax_response);
             //Add dynamically the destination into the dropdown
@@ -187,6 +194,7 @@ function getMarkers(urlParameter, type) {
             fillInfoTables("#inlineFormCustomSelectOrigin", '#tab');
             //Add dynamically the option selected into the table destination
             fillInfoTables("#inlineFormCustomSelectDestination", '#tab2');
+            calcutatingRoute = false;
         },
         error: function (error) {
             console.log(error);
@@ -194,16 +202,24 @@ function getMarkers(urlParameter, type) {
     })
 };
 
-//Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
+
 function cleanDropdowns() {
+    //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
     $("#inlineFormCustomSelectOrigin").empty();
     $("#inlineFormCustomSelectDestination").empty();
     $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
     $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
 }
 
-//Add options dynamically to the dropdown
-function fillDropdown(dropdownID, dropdownOptions){
+function cleanTables() {
+    $('#tab').empty();
+    $('#tab').append($('<tr>').append('Please select your Origin'));
+    $('#tab2').empty();
+    $('#tab2').append($('<tr>').append('Please select your Destination'));
+}
+
+
+function fillDropdown(dropdownID, dropdownOptions) {
     var dropdown = $(dropdownID);
     $.each(dropdownOptions, function () {
         dropdown.append($("<option />").val(this.id).text(this.id + " - " + this.name));
@@ -211,10 +227,60 @@ function fillDropdown(dropdownID, dropdownOptions){
 }
 
 
-function  fillInfoTables(tableID, row) {
+function fillInfoTables(tableID, row) {
     $(tableID).change(function () {
         $(row).append($('<tr>')).empty();
-        var dropdown = $(tableID + ' option:selected').text();
-        $(row).append($('<tr>').append(dropdown));
+        value = $(tableID).val();
+        value = value - 1;
+        if (transportType == 'flight_graph') {
+            byFlightInfo(tableID, row, value);
+        }
+        else if (transportType == 'train_graph') {
+            byTrainInfo(tableID, row, value);
+        }
+        else if (transportType == 'bus_graph') {
+            byBusInfo(tableID, row, value);
+        }
+        else if (transportType == 'taxi_graph') {
+            byTaxiInfo(tableID, row, value);
+        }
     });
+}
+
+function byFlightInfo(tableID, row, value) {
+    $(row).append($('<tr>').append((('Airport: ').bold() + ajax_response[value].name)));
+    $(row).append($('<tr>').append((('Airport ID: ').bold() + ajax_response[value].id)));
+    $(row).append($('<tr>').append((('Company: ').bold() + ajax_response[value].company)));
+    $(row).append($('<tr>').append((('Latitude: ').bold() + ajax_response[value].latitude)));
+    $(row).append($('<tr>').append((('Longitude: ').bold() + ajax_response[value].longitude)));
+    $(row).append($('<tr>').append((('Passengers: ').bold() + ajax_response[value].passengers)));
+    $(row).append($('<tr>').append((('Schedules: ').bold() + ajax_response[value].schedules)));
+}
+
+function byTrainInfo(tableID, row, value) {
+    $(row).append($('<tr>').append((('Train Station: ').bold() + ajax_response[value].name)));
+    $(row).append($('<tr>').append((('Train Station ID: ').bold() + ajax_response[value].id)));
+    $(row).append($('<tr>').append((('Company: ').bold() + ajax_response[value].company)));
+    $(row).append($('<tr>').append((('Latitude: ').bold() + ajax_response[value].latitude)));
+    $(row).append($('<tr>').append((('Longitude: ').bold() + ajax_response[value].longitude)));
+    $(row).append($('<tr>').append((('Schedules: ').bold() + ajax_response[value].schedules)));
+}
+
+function byBusInfo(tableID, row, value) {
+    $(row).append($('<tr>').append((('Bus Station: ').bold() + ajax_response[value].name)));
+    $(row).append($('<tr>').append((('Bus Station ID: ').bold() + ajax_response[value].id)));
+    $(row).append($('<tr>').append((('Company: ').bold() + ajax_response[value].company)));
+    $(row).append($('<tr>').append((('Latitude: ').bold() + ajax_response[value].latitude)));
+    $(row).append($('<tr>').append((('Longitude: ').bold() + ajax_response[value].longitude)));
+}
+
+function byTaxiInfo(tableID, row, value) {
+    $(row).append($('<tr>').append((('Taxi Station: ').bold() + ajax_response[value].name)));
+    $(row).append($('<tr>').append((('Taxi Station ID: ').bold() + ajax_response[value].id)));
+    $(row).append($('<tr>').append((('Company: ').bold() + ajax_response[value].company)));
+    $(row).append($('<tr>').append((('Latitude: ').bold() + ajax_response[value].latitude)));
+    $(row).append($('<tr>').append((('Longitude: ').bold() + ajax_response[value].longitude)));
+    $(row).append($('<tr>').append((('Driver: ').bold() + ajax_response[value].driver_name + " " + ajax_response[value].driver_lastName)));
+    $(row).append($('<tr>').append((('Driver ID: ').bold() + ajax_response[value].driver_id)));
+    $(row).append($('<tr>').append((('Price per KM: ').bold() + ajax_response[value].kilometer_cost)));
 }
