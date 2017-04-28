@@ -11,6 +11,7 @@ var map;
 var flightPlanCoordinates = [];
 var transport_id;
 var flightPath;
+var numberOfEdges;
 
 function costaRicaMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -46,9 +47,6 @@ function initMap(transportID) {
             }
         ]
     });
-
-    // var ajax_response;
-
     switch (transport_id) {
         // ID:1 == Flight Transport Type
         case 1:
@@ -71,6 +69,7 @@ function initMap(transportID) {
     setMarkers(map, ajax_response);
 }
 
+
 function setMarkers(map, ajax_content) {
     for (var i = 0; i < ajax_content.length; i++) {
         var item = ajax_content[i];
@@ -87,8 +86,8 @@ function setMarkers(map, ajax_content) {
     }
 }
 
+
 function calculateRoute() {
-    // initMap(transportId);
     var origin_value = $("#inlineFormCustomSelectOrigin option:selected").val();
     var destination_value = $("#inlineFormCustomSelectDestination option:selected").val();
     var SendInfo = {
@@ -114,13 +113,16 @@ function calculateRoute() {
         }
     });
     generatePath(shortestPathIDs);
+    alert("Number of Edges: " + numberOfEdges);
 }
+
 
 // Print the shortes path between origin and destination
 function generatePath(shortestPathIDs) {
     // Clean paths from map by reloding the map and markers
     initMap(transport_id);
     // Get the corresponding edges from the received nodes
+    numberOfEdges = getEdgesFromPath(shortestPathIDs).length;
     var pathEdges =  getEdgesFromPath(shortestPathIDs);
     // Iterate through each Edge and print the corresponding path
     for (var i = 0; i < pathEdges.length; i++) {
@@ -138,11 +140,6 @@ function generatePath(shortestPathIDs) {
     }
 }
 
-function removeLine() {
-    flightPath.setMap(null);
-}
-
-test = [1,2];
 
 function getEdgesFromPath(nodes) {
     pathEdges = [];
@@ -155,11 +152,11 @@ function getEdgesFromPath(nodes) {
     return pathEdges;
 }
 
-function getLatLngFromEdge(test) {
+function getLatLngFromEdge(edgePair) {
     var coordinatesArray = [];
-    for (var i = 0; i < test.length; i++) {
+    for (var i = 0; i < edgePair.length; i++) {
         for (var node = 0; node < ajax_response.length; node++) {
-            if (test[i] == ajax_response[node].id){
+            if (edgePair[i] == ajax_response[node].id){
                 var item = ajax_response[node];
                 temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
                 coordinatesArray.push(temp);
@@ -168,9 +165,6 @@ function getLatLngFromEdge(test) {
     }
     return coordinatesArray;
 }
-
-
-/*--------------------------------- Ajax Functions ---------------------------------*/
 
 
 function getMarkers(urlParameter, type) {
@@ -200,16 +194,15 @@ function getMarkers(urlParameter, type) {
     })
 };
 
-
+//Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
 function cleanDropdowns() {
-    //Clean the dropdowns of origin and destination when entering the transportation methods and also appends the default option
     $("#inlineFormCustomSelectOrigin").empty();
     $("#inlineFormCustomSelectDestination").empty();
     $('#inlineFormCustomSelectOrigin').append('<option>Choose Origin</option>');
     $('#inlineFormCustomSelectDestination').append('<option>Choose Destination</option>');
 }
 
-
+//Add options dynamically to the dropdown
 function fillDropdown(dropdownID, dropdownOptions){
     var dropdown = $(dropdownID);
     $.each(dropdownOptions, function () {
