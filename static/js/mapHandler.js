@@ -10,6 +10,7 @@ var teta;
 var map;
 var flightPlanCoordinates = [];
 var transport_id;
+var flightPath;
 
 function costaRicaMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -29,8 +30,8 @@ function costaRicaMap() {
 }
 
 
-function initMap(transport_id) {
-    transport_id = transport_id;
+function initMap(transportID) {
+    transport_id = transportID;
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 8,
         center: {lat: 9.934739, lng: -84.087502},
@@ -115,33 +116,57 @@ function calculateRoute() {
     generatePath(shortestPathIDs);
 }
 
-
+// Print the shortes path between origin and destination
 function generatePath(shortestPathIDs) {
-    // alert(shortestPathIDs);
-    // alert(ajax_response.response.length);
-    // alert(shortestPathIDs.length);
-    for (var node = 0; node < ajax_response.length; node++) {
-        var item = ajax_response[node];
-        for (var j = 0; j < shortestPathIDs.length; j++) {
-            if (shortestPathIDs[j] == item.id){
+    // Clean paths from map by reloding the map and markers
+    initMap(transport_id);
+    // Get the corresponding edges from the received nodes
+    var pathEdges =  getEdgesFromPath(shortestPathIDs);
+    // Iterate through each Edge and print the corresponding path
+    for (var i = 0; i < pathEdges.length; i++) {
+        // Get latitude and longitude from edge pair
+        flightPlanCoordinates = getLatLngFromEdge(pathEdges[i]);
+        flightPath = new google.maps.Polyline({
+            path: flightPlanCoordinates,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+        // Print the edge path
+        flightPath.setMap(map);
+    }
+}
+
+function removeLine() {
+    flightPath.setMap(null);
+}
+
+test = [1,2];
+
+function getEdgesFromPath(nodes) {
+    pathEdges = [];
+    for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i+1]){
+            var temp = [nodes[i], nodes[i+1]];
+            pathEdges.push(temp);
+        }
+    }
+    return pathEdges;
+}
+
+function getLatLngFromEdge(test) {
+    var coordinatesArray = [];
+    for (var i = 0; i < test.length; i++) {
+        for (var node = 0; node < ajax_response.length; node++) {
+            if (test[i] == ajax_response[node].id){
+                var item = ajax_response[node];
                 temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
-                flightPlanCoordinates.push(temp);
-                
-                // TODO: Agregar aquí la generación del PATH para cada par en vez de hacerlo afuera.
+                coordinatesArray.push(temp);
             }
         }
-        // temp = new google.maps.LatLng(Number(item.latitude), Number(item.longitude));
-        // flightPlanCoordinates.push(temp);
     }
-
-    var flightPath = new google.maps.Polyline({
-        path: flightPlanCoordinates,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-    });
-    flightPath.setMap(map);
+    return coordinatesArray;
 }
 
 
@@ -195,8 +220,6 @@ function fillDropdown(dropdownID, dropdownOptions){
 
 function  fillInfoTables(tableID, row) {
     $(tableID).change(function () {
-        alert(ajax_response[0].name);
-        alert(nodesFromDB[0].name);
         $(row).append($('<tr>')).empty();
         var dropdown = $(tableID + ' option:selected').text();
         $(row).append($('<tr>').append(dropdown));
